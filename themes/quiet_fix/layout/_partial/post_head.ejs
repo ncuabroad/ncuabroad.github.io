@@ -1,0 +1,17 @@
+<div class="post-header-background <%- theme.is_article_img?'post-header-img':'post-header-color'  %>"
+    style="background: url('<%- theme.is_article_img ?  theme.default_cover : null %>')" 
+>
+    <div class="post-header-background-content">
+        <!--第XX期-(設定的名稱)-->
+        <h1>第 <% page.tags.data.forEach((item, index)=> { %>
+                <%= item.name %> 期
+            <% }) %>
+            -
+            <%= page.title %></h1>
+        <div class="post-header-info">
+            <div class="post-header-info-author">
+                <p><%- date(page.date, "YYYY-MM-DD HH:mm:ss") %></p>
+            </div>
+        </div>
+    </div>
+</div>
