@@ -1,0 +1,142 @@
+<div class="home">
+	<%- partial('_widget/header_body',{message:theme.headers.home.message,icon:theme.headers.home.icon}) %>
+	<div class="main">
+		<% if(theme.home_layout === 'block-card'){ %>
+			<div class="post-block" id="content">
+				<% 
+				// 注意：這裡我們不處理 page.posts.data，而是使用 site.posts.data 獲取所有文章
+				// 然後手動實現分頁，確保全站文章按正確順序排列
+				var allPosts = site.posts.data.slice();
+				
+				// 按建立時間排序（由新到舊）
+				allPosts.sort(function(a, b) {
+					// 獲取文章的建立時間
+					var timeA = new Date(a.date).getTime();
+					var timeB = new Date(b.date).getTime();
+					
+					// 按時間倒序排列（由新到舊）
+					return timeB - timeA;
+				});
+				
+				// 計算分頁參數
+				var perPage = config.per_page || 10;
+				var pageIndex = page.current - 1;
+				var start = pageIndex * perPage;
+				var end = start + perPage;
+				var pagePosts = allPosts.slice(start, end);
+				%>
+				<% pagePosts.forEach(function (post,i) { %>
+					<a href="<%- url_for(post.path) %>" class="post-block-content">
+						<% if(post.cover){ %>
+							<img src="<%= post.cover %>" alt="Quiet">
+						<% }else{ %>
+							<img src="<%- theme.default_cover %>" alt="Quiet">
+						<% } %>
+						<div class="post-block-content-info">
+							<h2><%= post.title %></h2>
+							<span class="post-block-content-info-excerpt">
+								<%= post.excerpt %>
+							</span>
+							<div class="post-block-content-info-exhibition">
+								<div class="post-block-content-info-exhibition-tags">
+									<span class="post-tag">
+										<%- post.categories.data[0] ? post.categories.data[0].name : theme.author ? theme.author : 'Quiet' %>
+									</span>
+									<span class="post-tag">
+										<%- date(post.date, "YYYY-MM-DD" ) %>
+									</span>
+								</div>
+								<div class="meat-type"></div>
+							</div>
+						</div>
+					</a>
+				<% }) %>
+			</div>
+		<% }else{ %>
+			<div class="post-card" id="content">
+				<% 
+				// 使用相同的邏輯處理卡片布局
+				var allPosts = site.posts.data.slice();
+				
+				// 按建立時間排序（由新到舊）
+				allPosts.sort(function(a, b) {
+					// 獲取文章的建立時間
+					var timeA = new Date(a.date).getTime();
+					var timeB = new Date(b.date).getTime();
+					
+					// 按時間倒序排列（由新到舊）
+					return timeB - timeA;
+				});
+				
+				// 計算分頁參數
+				var perPage = config.per_page || 10;
+				var pageIndex = page.current - 1;
+				var start = pageIndex * perPage;
+				var end = start + perPage;
+				var pagePosts = allPosts.slice(start, end);
+				%>
+				<% pagePosts.forEach(function (post,i) { %>
+					<div class="post-card-display">
+						<a href="<%- url_for(post.path) %>">
+							<h2 class="post-card-title">
+								<% post.tags.data.forEach((item, index)=> { %>
+										#<%= item.name %>期
+									<% }) %>-<%= post.title %>
+							</h2>
+							<% if(post.cover){ %>
+								<img src="<%= post.cover %>" alt="post cover" height="auto">
+							<% }else{ %>
+								<img src="<%- theme.default_cover %>" alt="post cover">
+							<% } %>
+						</a>
+						<div class="post-card-meat">
+							<div class="meat-info">
+								<div class="info-auth">
+										<a href="<%- post.categories.data[0] && post.categories.data[0].path %>">
+											<%- post.categories.data[0] ? post.categories.data[0].name : theme.author ? theme.author : 'Quiet' %>
+										</a>
+								</div>
+								<div class="info-data">
+									<%- date(post.date, "YYYY-MM-DD" ) %>
+								</div>
+							</div>
+							<div class="meat-type"></div>
+						</div>
+					</div>
+				<% }) %>
+			</div>
+		<% } %>
+		
+	
+	</div>
+	<div class="change-page">
+		<% 
+		// 重新計算分頁導航
+		var totalPosts = site.posts.data.length;
+		var perPage = config.per_page || 10;
+		var totalPages = Math.ceil(totalPosts / perPage);
+		var currentPage = page.current;
+		%>
+		
+		<% if(currentPage > 1){ %>
+			<div class="p-page">
+				<a href="<%- url_for(currentPage === 2 ? '/' : '/page/' + (currentPage - 1)) %>">
+					<div class="previous">
+						Last Page
+					</div>
+				</a>
+			</div>
+		<% } %>
+		
+		<% if(currentPage < totalPages){ %>
+			<div class="n-page">
+				<a href="<%- url_for('/page/' + (currentPage + 1)) %>">
+					<div class="next">
+						Next Page
+					</div>
+				</a>
+			</div>
+		<% } %>
+	</div>
+	
+</div>

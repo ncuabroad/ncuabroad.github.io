@@ -1,0 +1,15 @@
+
+<div class="footer">
+	<div class="Copyright">
+		©<%= new Date().getFullYear() %> <br>電子報內容由中央大學國際處製作.<br>網頁使用 Quiet 主題和 Hexo 引擎架設.
+	</div>
+	<div class="contact">
+		<% theme.bottomIcon.forEach(item =>{%>
+		<a href="<%= item.toUrl %>">
+			<img src="<%= item.iconLink %>" alt="Quiet主题">
+		</a>
+		<% }) %>
+	</div>
+</div>
+<%- partial('_widget/gotop') %>
+<%- partial('_widget/analytics')  %>
